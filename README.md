@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/apache/incubator-pagespeed-ngx.svg?branch=master)](https://travis-ci.org/apache/incubator-pagespeed-ngx)
 
 --
+
 Updated on 17 Sep. 2024:
 
 Update ngx_pagespeed.cc
