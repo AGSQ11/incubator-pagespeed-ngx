@@ -2,6 +2,22 @@
 
 [![Build Status](https://travis-ci.org/apache/incubator-pagespeed-ngx.svg?branch=master)](https://travis-ci.org/apache/incubator-pagespeed-ngx)
 
+--
+Updated on 17 Sep. 2024:
+
+Update ngx_pagespeed.cc
+Updated ps_get_cache_control: 
+This change assumes that cache_control is now a single ngx_table_elt_t* pointer, rather than an array.
+
+Updated ps_set_cache_control: 
+Null check: Instead of checking elts, we check if r->headers_out.cache_control is nullptr.
+Memory allocation: We use ngx_pcalloc to allocate memory for the ngx_table_elt_t structure (the cache control header).
+Set header values: We manually set the key and value fields for the Cache-Control header.
+
++ Added the compatible PSOL achive directly into the project files.
+
+--
+
 ngx_pagespeed speeds up your site and reduces page load time by automatically
 applying web performance best practices to pages and associated assets (CSS,
 JavaScript, images) without requiring you to modify your existing content or
