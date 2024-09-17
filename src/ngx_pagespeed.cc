@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -395,115 +395,50 @@ namespace {
 // as well as setting the shortcut pointers (both upper case and lower case).
 //
 // Based on ngx_http_add_cache_control.
-ngx_int_t ps_set_cache_control(ngx_http_request_t* r, char* cache_control) {
-#if defined(nginx_version) && nginx_version >= 1023000
-  ngx_table_elt_t* cc = r->headers_out.cache_control;
-
-  if (cc == NULL) {
-
-      cc = reinterpret_cast<ngx_table_elt_t*>(ngx_list_push(&r->headers_out.headers));
-      if (cc == NULL) {
-          return NGX_ERROR;
-      }
-
-      r->headers_out.cache_control = cc;
-      cc->next = NULL;
-
-      cc->hash = 1;
-      ngx_str_set(&cc->key, "Cache-Control");
-
-  } else {
-      for (cc = cc->next; cc; cc = cc->next) {
-          cc->hash = 0;
-      }
-
-      cc = r->headers_out.cache_control;
-      cc->next = NULL;
-  }
-  cc->value.len = strlen(cache_control);
-  cc->value.data =
-      reinterpret_cast<u_char*>(cache_control);
-
-#else
-  // First strip existing cache-control headers.
-  ngx_table_elt_t* header;
-  NgxListIterator it(&(r->headers_out.headers.part));
-  while ((header = it.Next()) != NULL) {
-    if (STR_CASE_EQ_LITERAL(header->key, "Cache-Control")) {
-      // Response headers with hash of 0 are excluded from the response.
-      header->hash = 0;
-    }
-  }
-  // Now add our new cache control header.
-  if (r->headers_out.cache_control.elts == NULL) {
-    ngx_int_t rc = ngx_array_init(&r->headers_out.cache_control, r->pool,
-                                  1, sizeof(ngx_table_elt_t*));
-    if (rc != NGX_OK) {
+ngx_int_t ps_set_cache_control(ngx_http_request_t* r, char* cache_control_value) {
+  // Check if cache_control is already set
+  if (r->headers_out.cache_control == nullptr) {
+    // Allocate memory for a single cache_control element
+    r->headers_out.cache_control = static_cast<ngx_table_elt_t*>(
+        ngx_pcalloc(r->pool, sizeof(ngx_table_elt_t)));
+    if (r->headers_out.cache_control == nullptr) {
       return NGX_ERROR;
     }
   }
-  ngx_table_elt_t** cache_control_headers = static_cast<ngx_table_elt_t**>(
-      ngx_array_push(&r->headers_out.cache_control));
-  if (cache_control_headers == NULL) {
-    return NGX_ERROR;
-  }
-  cache_control_headers[0] = static_cast<ngx_table_elt_t*>(
-      ngx_list_push(&r->headers_out.headers));
-  if (cache_control_headers[0] == NULL) {
-    return NGX_ERROR;
-  }
-  cache_control_headers[0]->hash = 1;
-  ngx_str_set(&cache_control_headers[0]->key, "Cache-Control");
-  cache_control_headers[0]->value.len = strlen(cache_control);
-  cache_control_headers[0]->value.data =
-      reinterpret_cast<u_char*>(cache_control);
-#endif
+
+  // Set the cache control header value
+  r->headers_out.cache_control->hash = 1;
+  r->headers_out.cache_control->key.len = sizeof("Cache-Control") - 1;
+  r->headers_out.cache_control->key.data = (u_char*)"Cache-Control";
+  r->headers_out.cache_control->value.len = strlen(cache_control_value);
+  r->headers_out.cache_control->value.data = (u_char*)cache_control_value;
+
   return NGX_OK;
 }
+
 
 // Returns false if the header wasn't found.  Otherwise sets cache_control and
 // returns true;
 bool ps_get_cache_control(ngx_http_request_t* r, GoogleString* cache_control) {
-  // Use headers_out.cache_control instead of looking for Cache-Control in
-  // headers_out.headers, because if an upstream sent multiple Cache-Control
-  // headers they're already combined in headers_out.cache_control.
-#if defined(nginx_version) && nginx_version >= 1023000
-  ngx_table_elt_t* cc = r->headers_out.cache_control;
-  bool first_segment = true;
+  // Use headers_out.cache_control directly, as it's a single pointer now.
+  ngx_table_elt_t* ccp = r->headers_out.cache_control;  // No need to access `elts`
 
-  while (cc != NULL) {
-    if (cc->hash) {
-      if (first_segment) {
-        first_segment = false;
-      } else {
-        cache_control->append(", ");
-      }
-      cache_control->append(reinterpret_cast<char*>(cc->value.data),
-                            cc->value.len);
-    }
-    cc = cc->next;
-  }
-#else
-  auto ccp = static_cast<ngx_table_elt_t**>(r->headers_out.cache_control.elts);
   if (ccp == nullptr) {
     return false;  // Header not present.
   }
+
   bool first_segment = true;
-  for (ngx_uint_t i = 0; i < r->headers_out.cache_control.nelts; i++) {
-    if (ccp[i]->hash == 0) {
-      continue;  // Elements with a hash of 0 are marked as excluded.
-    }
-    if (first_segment) {
-      first_segment = false;
-    } else {
+  // Since it's no longer an array, you only need to handle one element.
+  if (ccp->hash != 0) {  // Elements with a hash of 0 are marked as excluded.
+    if (!first_segment) {
       cache_control->append(", ");
     }
-    cache_control->append(reinterpret_cast<char*>(ccp[i]->value.data),
-                          ccp[i]->value.len);
+    cache_control->append(reinterpret_cast<char*>(ccp->value.data), ccp->value.len);
   }
-#endif
+
   return true;
 }
+
 
 template<class Headers>
 void copy_headers_from_table(const ngx_list_t &from, Headers* to) {
@@ -1074,7 +1009,7 @@ void* ps_create_main_conf(ngx_conf_t* cf) {
   }
   ps_main_conf_t* cfg_m = ps_create_conf<ps_main_conf_t>(cf);
   if (cfg_m == NULL) {
-    return NULL;
+    return NGX_CONF_ERROR;
   }
   CHECK(!factory_deleted);
   NgxRewriteOptions::Initialize();
@@ -1095,7 +1030,7 @@ void* ps_create_main_conf(ngx_conf_t* cf) {
 void* ps_create_srv_conf(ngx_conf_t* cf) {
   ps_srv_conf_t* cfg_s = ps_create_conf<ps_srv_conf_t>(cf);
   if (cfg_s == NULL) {
-    return NULL;
+    return NGX_CONF_ERROR;
   }
   ps_set_conf_cleanup_handler(cf, ps_cleanup_srv_conf, cfg_s);
   return cfg_s;
@@ -1104,7 +1039,7 @@ void* ps_create_srv_conf(ngx_conf_t* cf) {
 void* ps_create_loc_conf(ngx_conf_t* cf) {
   ps_loc_conf_t* cfg_l = ps_create_conf<ps_loc_conf_t>(cf);
   if (cfg_l == NULL) {
-    return NULL;
+    return NGX_CONF_ERROR;
   }
   ps_set_conf_cleanup_handler(cf, ps_cleanup_loc_conf, cfg_l);
   return cfg_l;
