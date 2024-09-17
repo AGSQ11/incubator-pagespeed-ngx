@@ -1,7 +1,5 @@
 ![ngx_pagespeed](https://user-images.githubusercontent.com/6751650/73116078-338a9180-3f0f-11ea-8fdf-8c99cb4bec7f.png)
 
-[![Build Status](https://travis-ci.org/apache/incubator-pagespeed-ngx.svg?branch=master)](https://travis-ci.org/apache/incubator-pagespeed-ngx)
-
 --
 
 Updated on 17 Sep. 2024:
