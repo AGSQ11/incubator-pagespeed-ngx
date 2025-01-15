@@ -616,17 +616,15 @@ Not deleting $directory; name is suspiciously short.  Something is wrong."
       fi
     fi
   else
-    nps_baseurl="https://github.com/apache/incubator-pagespeed-ngx/archive"
-    nps_downloaded="$TEMPDIR/$nps_downloaded_fname.zip"
-    status "Downloading ngx_pagespeed..."
-    run wget "$nps_baseurl/$tag_name.zip" -O "$nps_downloaded"
-    # Read the directory name from the zip, the first line is expected to have it.
-    nps_module_dir=$(unzip -qql "$nps_downloaded" | head -n1 | tr -s ' ' | cut -d' ' -f5-)
-    nps_module_dir="$BUILDDIR/${nps_module_dir::-1}"
+    # Changed from ZIP download to git clone
+    status "Cloning ngx_pagespeed..."
+    nps_module_dir="$BUILDDIR/incubator-pagespeed-ngx"
     delete_if_already_exists "$nps_module_dir"
-    status "Extracting ngx_pagespeed..."
-    run unzip -q "$nps_downloaded" -d "$BUILDDIR"
+    run git clone "https://github.com/AGSQ11/incubator-pagespeed-ngx.git" "$nps_module_dir"
     run cd "$nps_module_dir"
+    if [ "$NPS_VERSION" != "latest-stable" ]; then
+      run git checkout "$tag_name"
+    fi
   fi
 
   MOD_PAGESPEED_DIR=""
@@ -659,22 +657,9 @@ Not deleting $directory; name is suspiciously short.  Something is wrong."
     # ngx_pagespeed against.
     if "$DRYRUN"; then
       psol_url="https://psol.example.com/cant-get-psol-version-in-dry-run.tar.gz"
-    elif [ -e PSOL_BINARY_URL ]; then
-      # Releases after 1.11.33.4 there is a PSOL_BINARY_URL file that tells us
-      # where to look.
-      psol_url="$(scripts/format_binary_url.sh PSOL_BINARY_URL)"
-      if [[ "$psol_url" != https://* ]]; then
-        fail "Got bad psol binary location information: $psol_url"
-      fi
     else
-      # For past releases we have to grep it from the config file.  The url has
-      # always looked like this, and the config file has contained it since
-      # before we started tagging our ngx_pagespeed releases.
-      psol_url="$(grep -o \
-          "https://dl.google.com/dl/page-speed/psol/[0-9.]*.tar.gz" config)"
-      if [ -z "$psol_url" ]; then
-        fail "Couldn't find PSOL url in $PWD/config"
-      fi
+      # Using the new fixed PSOL URL
+      psol_url="https://github.com/AGSQ11/incubator-pagespeed-ngx/raw/refs/heads/master/psol-1.14.36.1-apache-incubating-x64.tar.gz"
     fi
 
     status "Downloading PSOL binary..."
