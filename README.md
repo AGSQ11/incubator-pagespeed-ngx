@@ -13,7 +13,7 @@ Null check: Instead of checking elts, we check if r->headers_out.cache_control i
 Memory allocation: We use ngx_pcalloc to allocate memory for the ngx_table_elt_t structure (the cache control header).
 Set header values: We manually set the key and value fields for the Cache-Control header.
 
-+ Added the compatible PSOL achive directly into the project files.
++ Added the compatible PSOL archive directly into the project files.
 
 --
 
