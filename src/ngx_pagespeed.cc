@@ -395,7 +395,8 @@ namespace {
 // as well as setting the shortcut pointers (both upper case and lower case).
 //
 // Based on ngx_http_add_cache_control.
-ngx_int_t ps_set_cache_control(ngx_http_request_t* r, char* cache_control_value) {
+ngx_int_t ps_set_cache_control(ngx_http_request_t* r,
+                               const char* cache_control_value) {
   // Check if cache_control is already set
   if (r->headers_out.cache_control == nullptr) {
     // Allocate memory for a single cache_control element
@@ -411,7 +412,8 @@ ngx_int_t ps_set_cache_control(ngx_http_request_t* r, char* cache_control_value)
   r->headers_out.cache_control->key.len = sizeof("Cache-Control") - 1;
   r->headers_out.cache_control->key.data = (u_char*)"Cache-Control";
   r->headers_out.cache_control->value.len = strlen(cache_control_value);
-  r->headers_out.cache_control->value.data = (u_char*)cache_control_value;
+  r->headers_out.cache_control->value.data =
+      reinterpret_cast<u_char*>(const_cast<char*>(cache_control_value));
 
   return NGX_OK;
 }
@@ -568,7 +570,7 @@ ngx_int_t copy_response_headers_to_ngx(
 
     // Make copies of name and value to put into headers_out.
     if (STR_EQ_LITERAL(name, "Cache-Control")) {
-      ps_set_cache_control(r, reinterpret_cast<char*>(value.data));
+      ps_set_cache_control(r, reinterpret_cast<const char*>(value.data));
       continue;
     } else if (STR_EQ_LITERAL(name, "Content-Type")) {
       // Unlike all the other headers, content_type is just a string.
@@ -2717,7 +2719,7 @@ void ps_beacon_handler_helper(ngx_http_request_t* r,
                                       user_agent,
                                       request_context);
 
-  ps_set_cache_control(r, const_cast<char*>("max-age=0, no-cache"));
+  ps_set_cache_control(r, "max-age=0, no-cache");
 
   // TODO(jefftk): figure out how to insert Content-Length:0 as a response
   // header so wget doesn't hang.
