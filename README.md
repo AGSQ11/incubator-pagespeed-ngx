@@ -2,7 +2,7 @@
 
 --
 
-Updated on 17 Sep. 2024:
+Updated on 17 Sep. 2025:
 
 Update ngx_pagespeed.cc
 Updated ps_get_cache_control: 
@@ -32,7 +32,7 @@ workflow. Features include:
   [more](https://developers.google.com/speed/docs/mod_pagespeed/config_filters)
 
 To see ngx_pagespeed in action, with example pages for each of the
-optimizations, see our <a href="http://ngxpagespeed.com">demonstration site</a>.
+optimizations, see our <a href="https://ngxpagespeed.com">demonstration site</a>.
 
 ## How to build
 
