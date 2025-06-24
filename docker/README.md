@@ -43,7 +43,7 @@ workflow. Features include:
 - and [more](https://developers.google.com/speed/docs/mod_pagespeed/config_filters)
 
 To see ngx_pagespeed in action, with example pages for each of the
-optimizations, see our [demonstration site](http://ngxpagespeed.com).
+optimizations, see our [demonstration site](https://ngxpagespeed.com).
 
 ![logo](https://camo.githubusercontent.com/4138679c6cf85adb18c4cf820189c898f7dbf5cb/68747470733a2f2f6c68362e676f6f676c6575736572636f6e74656e742e636f6d2f2d71756665644a494a7137592f55584576565978795976492f4141414141414141446f382f4a48444651687339315f632f733430312f30345f6e67785f7061676573706565642e706e67)
 
@@ -93,8 +93,8 @@ Then you can hit `http://localhost:8080` or `http://host-ip:8080` in your browse
 $ docker run --name my-custom-nginx-pagespeed -v /host/path/nginx.conf:/etc/nginx/nginx.conf:ro -d pagespeed/nginx-pagespeed
 ```
 
-For information on the syntax of the nginx configuration files, see [the official documentation](http://nginx.org/en/docs/) (specifically the [Beginner's Guide](http://nginx.org/en/docs/beginners_guide.html#conf_structure)). For pagespeed specific nginx config syntax, see [Beginner's guide](https://www.modpagespeed.com/doc/configuration) or a complete overview of [all pagespeed filters](https://www.ngxpagespeed.com/).
-For a quick start on pagespeed specific configuration see []
+For information on the syntax of the nginx configuration files, see [the official documentation](https://nginx.org/en/docs/) (specifically the [Beginner's Guide](https://nginx.org/en/docs/beginners_guide.html#conf_structure)). For pagespeed specific nginx config syntax, see [Beginner's guide](https://www.modpagespeed.com/doc/configuration) or a complete overview of [all pagespeed filters](https://www.ngxpagespeed.com/).
+For a quick start on pagespeed specific configuration see [our quick start guide](https://github.com/apache/incubator-pagespeed-ngx#how-to-use)
 
 If you wish to adapt the default configuration, use something like the following to copy it from a running nginx-pagespeed container:
 
@@ -153,7 +153,7 @@ This is the defacto image. If you are unsure about what your needs are, you prob
 
 ## `nginx:edge`
 
-This image has the most up-to-date system packages available in the [Alpine Linux project](http://alpinelinux.org). This means the latest LibreSSL and musl-libc, with the downside of having less tested system packages.
+This image has the most up-to-date system packages available in the [Alpine Linux project](https://alpinelinux.org). This means the latest LibreSSL and musl-libc, with the downside of having less tested system packages.
 
 
 ## Using the Dockerfile
@@ -178,7 +178,7 @@ Apache PageSpeed is an effort undergoing incubation at The Apache Software Found
 
 # License
 View [PageSpeed license information](https://github.com/apache/incubator-pagespeed-ngx/blob/master/LICENSE)
-View [Nginx license information](http://nginx.org/LICENSE)
+View [Nginx license information](https://nginx.org/LICENSE)
 
 As with all Docker images, these likely also contain other software which may be under other licenses (such as Bash, etc from the base distribution, along with any direct or indirect dependencies of the primary software being contained).
 

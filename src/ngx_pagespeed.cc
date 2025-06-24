@@ -2934,7 +2934,7 @@ ngx_int_t ps_beacon_handler(ngx_http_request_t* r) {
     // client and then call us back.  Control flow continues in
     // ps_beacon_body_handler unless there's an error reading the request body.
     //
-    // See: http://forum.nginx.org/read.php?2,31312,31312
+    // See: https://forum.nginx.org/read.php?2,31312,31312
     ngx_int_t rc = ngx_http_read_client_request_body(r, ps_beacon_body_handler);
     if (rc >= NGX_HTTP_SPECIAL_RESPONSE) {
       return rc;
