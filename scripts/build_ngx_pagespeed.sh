@@ -27,7 +27,7 @@ Usage: build_ngx_pagespeed.sh [options]
 
   Or:
 
-     git clone git@github.com:pagespeed/ngx_pagespeed.git
+    git clone https://github.com/pagespeed/ngx_pagespeed.git
      cd ngx_pagespeed/
      git checkout <branch>
      scripts/build_ngx_pagespeed.sh [options]
@@ -793,7 +793,7 @@ Not deleting $directory; name is suspiciously short.  Something is wrong."
       echo
       echo "If this is a new installation you probably need an init script to"
       echo "manage starting and stopping the nginx service.  See:"
-      echo "  http://wiki.nginx.org/InitScripts"
+      echo "  https://wiki.nginx.org/InitScripts"
       echo
       echo "You'll also need to configure ngx_pagespeed if you haven't yet:"
       echo "  https://developers.google.com/speed/pagespeed/module/configuration"
