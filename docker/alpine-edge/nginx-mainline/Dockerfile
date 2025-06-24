@@ -78,7 +78,7 @@ FROM alpine:$ALPINE_VERSION AS nginx
 # Check https://github.com/apache/incubator-pagespeed-ngx/tags
 ARG NGX_PAGESPEED_TAG=v1.13.35.2-stable
 
-# Check http://nginx.org/en/download.html for the latest version.
+# Check https://nginx.org/en/download.html for the latest version.
 ARG NGINX_VERSION=1.15.6
 ARG NGINX_PGPKEY=520A9993A1C052F8
 ARG NGINX_BUILD_CONFIG="\

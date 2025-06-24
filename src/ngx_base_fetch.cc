@@ -198,7 +198,7 @@ void NgxBaseFetch::ReadCallback(const ps_event_data& data) {
   ngx_http_finalize_request(r, rc);
 
   if (run_posted) {
-    // See http://forum.nginx.org/read.php?2,253006,253061
+    // See https://forum.nginx.org/read.php?2,253006,253061
     ngx_http_run_posted_requests(c);
   }
 }
